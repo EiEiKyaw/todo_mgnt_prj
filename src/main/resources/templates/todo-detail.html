@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html
+	xmlns:layout="http://www.w3.org/1999/xhtml"
+	layout:decorate="~{layouts/layout}">
+<head>
+</head>
+<body>
+	<div
+		layout:fragment="content"
+		class="container card mb-3">
+		<div class="card-header">New Todo</div>
+		<div class="card-body">
+			<form
+				class="row g-3"
+				th:action="@{/todo/list}"
+				th:object="${data}"
+				method="POST">
+				<div class="col-md-7">
+					<label
+						for="title"
+						class="form-label">Title</label>
+					<input
+						type="text"
+						class="form-control"
+						id="title"
+						name="title"
+						th:field="*{title}">
+					<span
+						th:if="${#fields.hasErrors('title')}"
+						th:errors="*{title}"></span>
+				</div>
+				<div class="col-md-3">
+					<label
+						for="targetedDate"
+						class="form-label">Target Date</label>
+					<input
+						type="date"
+						class="form-control"
+						id="targetedDate"
+						name="targetedDate"
+						th:field="*{targetedDate}">
+				</div>
+				<div class="col-md-2">
+					<label
+						for="status"
+						class="form-label">Status</label>
+					</select>
+					<select
+						id="status"
+						class="form-select"
+						th:field="*{status}">
+						<option
+							th:value="TODO"
+							th:text="Todo"></option>
+						<option
+							th:value="IN_PROGRESS"
+							th:text="InProgress"></option>
+						<option
+							th:value="DONE"
+							th:text="Done"></option>
+					</select>
+				</div>
+				<div class="col-12">
+					<label
+						for="description"
+						class="form-label">Description</label>
+					<input
+						type="text"
+						class="form-control"
+						id="description"
+						name="description"
+						th:field="*{description}">
+				</div>
+				<div class="col-12">
+					<label
+						for="detail"
+						class="form-label">Detail</label>
+					<textarea
+						class="mytextarea"
+						id="detail"
+						name="detail"
+						th:field="*{detail}"></textarea>
+				</div>
+				<div class="col-12 d-grid gap-2 d-md-flex justify-content-md-end">
+					<a
+						th:href="@{/todo/list}"
+						class="btn btn-secondary">Back</a>
+					<button
+						type="submit"
+						class="btn btn-primary">Create</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
