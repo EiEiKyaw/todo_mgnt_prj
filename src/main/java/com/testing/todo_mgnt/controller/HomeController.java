@@ -21,12 +21,12 @@ public class HomeController {
 
 	@PostMapping("/login")
 	public String postLogin() {
-		return "home";
+		return "index";
 	}
 
 	@GetMapping("/home")
 	public String getHomePage() {
-		return "home";
+		return "index";
 	}
 
 }
