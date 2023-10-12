@@ -2,9 +2,12 @@ package com.testing.todo_mgnt.service.impl;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,53 +22,91 @@ import com.testing.todo_mgnt.service.UserService;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	private UserRepository userRepository;
+	private UserRepository userRepo;
 
 	@Autowired
-	private RoleRepository roleRepository;
+	private RoleRepository roleRepo;
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private PasswordEncoder pwdEncoder;
 
 	@Override
-	public void saveUser(UserDto userDto) {
+	public void create(UserDto userDto) {
 		User user = new User();
 		user.setUsername(userDto.getUsername());
 		user.setEmail(userDto.getEmail());
-		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+		if (userDto.getId() != null) {
+			User oldUser = userRepo.findById(userDto.getId()).get();
+			user.setPassword(oldUser.getPassword());
+		} else {
+			user.setPassword(pwdEncoder.encode(userDto.getPassword()));
+		}
 		user.setStatus(userDto.getStatus());
 
-		Role role = roleRepository.findByName("ROLE_ADMIN");
+		Role role = roleRepo.findByName(userDto.getRole());
 		if (role == null) {
-			role = checkRoleExist();
+			role = checkRoleExist(userDto.getRole());
 		}
 		user.setRoles(Arrays.asList(role));
-		userRepository.save(user);
+		userRepo.save(user);
 	}
 
 	@Override
-	public User findByUsername(String username) {
-		return userRepository.findByUsername(username);
+	public List<UserDto> getAll() {
+		List<User> users = userRepo.findAll();
+		return users.stream().map((user) -> UserDto.mapToUserDto(user)).collect(Collectors.toList());
 	}
 
-	@Override
-	public List<UserDto> findAllUsers() {
-		List<User> users = userRepository.findAll();
-		return users.stream().map((user) -> mapToUserDto(user)).collect(Collectors.toList());
-	}
-
-	private UserDto mapToUserDto(User user) {
-		UserDto userDto = new UserDto();
-		userDto.setUsername(user.getUsername());
-		userDto.setEmail(user.getEmail());
-		userDto.setStatus(user.getStatus());
-		return userDto;
-	}
-
-	private Role checkRoleExist() {
+	private Role checkRoleExist(String roleName) {
 		Role role = new Role();
-		role.setName("ROLE_ADMIN");
-		return roleRepository.save(role);
+		role.setName(roleName);
+		return roleRepo.save(role);
+	}
+
+	@Override
+	public UserDto findById(long id) {
+		Optional<User> entity = userRepo.findById(id);
+		if (!entity.isPresent()) {
+			throw new IllegalArgumentException("Invalid user id:" + id);
+		}
+		return UserDto.mapToUserDto(entity.get());
+	}
+
+	@Override
+	public UserDto findByEmail(String email) {
+		return UserDto.mapToUserDto(userRepo.findByEmail(email));
+	}
+
+	@Override
+	public UserDto findByUsername(String username) {
+		return UserDto.mapToUserDto(userRepo.findByUsername(username));
+	}
+
+	@Override
+	public UserDto findByUsernameOrEmail(String username, String email) {
+		return UserDto.mapToUserDto(userRepo.findByUsernameOrEmail(username, email));
+	}
+
+	@Override
+	public UserDto getLoginUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		User user = userRepo.findByEmail(authentication.getName());
+		return UserDto.mapToUserDto(user);
+	}
+
+	@Override
+	public void update(UserDto userDto) {
+		User user = userRepo.findById(userDto.getId()).get();
+		User newUser = new User();
+		newUser.setId(user.getId());
+		newUser.setPassword(user.getPassword());
+		newUser.setUsername(userDto.getUsername());
+		newUser.setEmail(userDto.getEmail());
+		newUser.setStatus(userDto.getStatus());
+
+		Role role = roleRepo.findByName(userDto.getRole());
+		newUser.setRoles(Arrays.asList(role));
+		userRepo.save(newUser);
 	}
 
 }

@@ -30,7 +30,7 @@ public class TodoServiceImpl implements TodoService {
 	public Todo findById(long id) {
 		Optional<Todo> entity = todoRepo.findById(id);
 		if (!entity.isPresent()) {
-			throw new IllegalArgumentException("Invalid user Id:" + id);
+			throw new IllegalArgumentException("Invalid todo id:" + id);
 		}
 		return entity.get();
 	}

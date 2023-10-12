@@ -38,15 +38,10 @@
 						<td th:text="${data.status}"></td>
 						<td>
 							<a
-								th:href="@{/todo/edit/{id}(id=${data.id})}"
+								th:href="@{/user/edit/{id}(id=${data.id})}"
 								class="btn btn-success btn-sm active"
 								role="button"
 								aria-pressed="true">Edit</a>
-							<a
-								th:href="@{/todo/delete/{id}(id=${data.id})}"
-								class="btn btn-danger btn-sm active"
-								role="button"
-								aria-pressed="true">Delete</a>
 						</td>
 					</tr>
 				</tbody>

@@ -1,7 +1,5 @@
 package com.testing.todo_mgnt.controller;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.testing.todo_mgnt.entity.Todo;
 import com.testing.todo_mgnt.service.TodoService;
+import com.testing.todo_mgnt.service.UserService;
 
 @Controller
 @RequestMapping("/todo")
@@ -22,10 +21,13 @@ public class TodoController {
 	@Autowired
 	private TodoService todoService;
 
+	@Autowired
+	private UserService userService;
+
 	@GetMapping("/create")
 	public String createTodo(Model model) {
-		Todo data = new Todo();
-		model.addAttribute("data", data);
+		model.addAttribute("login_user", userService.getLoginUser());
+		model.addAttribute("data", new Todo());
 		return "todo-detail";
 	}
 
@@ -40,20 +42,21 @@ public class TodoController {
 
 	@GetMapping("/list")
 	public String getTodoList(Model model) {
-		model.addAttribute("standardDate", new Date());
+		model.addAttribute("login_user", userService.getLoginUser());
 		model.addAttribute("data_list", todoService.getAll());
 		return "todo-list";
 	}
 
 	@GetMapping("/edit/{id}")
-	public String showUpdateForm(@PathVariable("id") long id, Model model) {
+	public String editTodo(@PathVariable("id") long id, Model model) {
+		model.addAttribute("login_user", userService.getLoginUser());
 		Todo todo = todoService.findById(id);
 		model.addAttribute("data", todo);
 		return "todo-edit";
 	}
 
 	@PostMapping("/edit/{id}")
-	public String updateUser(@PathVariable("id") long id, @ModelAttribute("data") Todo todo, BindingResult result,
+	public String editTodo(@PathVariable("id") long id, @ModelAttribute("data") Todo todo, BindingResult result,
 			Model model) {
 		if (result.hasErrors()) {
 			todo.setId(id);
@@ -65,7 +68,7 @@ public class TodoController {
 	}
 
 	@GetMapping("/delete/{id}")
-	public String deleteUser(@PathVariable("id") long id, Model model) {
+	public String deleteTodo(@PathVariable("id") long id, Model model) {
 		Todo todo = todoService.findById(id);
 		todoService.delete(todo);
 		return "redirect:/todo/list";

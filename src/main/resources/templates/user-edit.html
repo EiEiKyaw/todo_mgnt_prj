@@ -17,7 +17,7 @@
 			<form
 				class="row g-3 needs-validation"
 				novalidate
-				th:action="@{/user/create}"
+				th:action="@{/user/edit/{id}(id=${data.id})}"
 				th:object="${data}"
 				method="post">
 				<div class="col-6">
@@ -45,7 +45,8 @@
 						class="form-control"
 						id="password"
 						th:field="*{password}"
-						required>
+						required
+						disabled>
 					<div class="invalid-feedback">Please enter your password.</div>
 				</div>
 				<div class="col-6">
