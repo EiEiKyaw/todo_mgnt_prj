@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.testing.todo_mgnt.dto.UserDto;
+import com.testing.todo_mgnt.entity.User;
 import com.testing.todo_mgnt.service.UserService;
 
 @Controller
@@ -22,6 +23,23 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+
+	@GetMapping("/register")
+	public String registerUser(Model model) {
+		model.addAttribute("data", new UserDto());
+		return "user-register";
+	}
+
+	@PostMapping("/register")
+	public String registerUser(@Valid @ModelAttribute("data") UserDto userDto, BindingResult result, Model model,
+			RedirectAttributes attributes) {
+		User existingUser = userService.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail());
+		if (existingUser != null && existingUser.getUsername() != null && !existingUser.getUsername().isEmpty()) {
+			return "redirect:/user/register?duplicate";
+		}
+		userService.create(userDto);
+		return "redirect:/login";
+	}
 
 	@GetMapping("/create")
 	public String createUser(Model model) {
@@ -33,26 +51,25 @@ public class UserController {
 	@PostMapping("/create")
 	public String createUser(@Valid @ModelAttribute("data") UserDto userDto, BindingResult result, Model model,
 			RedirectAttributes attributes) {
-		UserDto existingUser = userService.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail());
+		User existingUser = userService.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail());
 		if (existingUser != null && existingUser.getUsername() != null && !existingUser.getUsername().isEmpty()) {
-			return "redirect:/user/create?duplicate";
+			return "redirect:/user/register?duplicate";
 		}
 		userService.create(userDto);
-		return "redirect:/login";
+		return "redirect:/user/list";
 	}
 
 	@GetMapping("/list")
 	public String getUserList(Model model) {
-		model.addAttribute("login_user", userService.getLoginUser());
-		model.addAttribute("data_list", userService.getAll());
+		UserDto loginUser = userService.getLoginUser();
+		model.addAttribute("login_user", loginUser);
+		model.addAttribute("data_list", userService.getAll(loginUser));
 		return "user-list";
 	}
 
 	@GetMapping("/edit/{id}")
 	public String editUser(@PathVariable("id") long id, Model model) {
 		model.addAttribute("login_user", userService.getLoginUser());
-		UserDto user = userService.findById(id);
-		System.out.println(user.getPassword());
 		model.addAttribute("data", userService.findById(id));
 		return "user-edit";
 	}
@@ -64,11 +81,8 @@ public class UserController {
 			userDto.setId(id);
 			return "user-edit";
 		}
-		UserDto existingUser = userService.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail());
-		System.out.println(".." + existingUser != null);
-		System.out.println("...." + (existingUser.getId() == id));
+		User existingUser = userService.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail());
 		if (existingUser != null && existingUser.getId() != id) {
-			System.out.println("............................");
 			return "redirect:/user/edit/" + existingUser.getId() + "?duplicate";
 		}
 		userService.update(userDto);

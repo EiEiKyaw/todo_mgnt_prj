@@ -40,6 +40,9 @@ public class Todo implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	private TodoStatus status;
+	
+	@Column(name = "created_user")
+	private Long createdUser;
 
 	@Column(name = "targeted_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

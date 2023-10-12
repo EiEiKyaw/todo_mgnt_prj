@@ -8,7 +8,7 @@
 	<div
 		layout:fragment="content"
 		class="container card mb-3">
-		<div class="card-header">New User</div>
+		<div class="card-header">Edit User</div>
 		<div class="card-body">
 			<div
 				class="alert alert-danger"
@@ -84,17 +84,17 @@
 					<label
 						for="status"
 						class="form-label">Role</label>
-					</select>
 					<select
 						id="status"
 						class="form-select"
 						th:field="*{role}">
 						<option
-							th:value="ROLE_USER"
+							th:value="User"
 							th:text="User"></option>
 						<option
-							th:value="ROLE_ADMIN"
-							th:text="Admin"></option>
+							th:value="Admin"
+							th:text="Admin"
+							th:if="${login_user.role == 'Admin'}"></option>
 					</select>
 				</div>
 				<div class="col-12 d-grid gap-2 d-md-flex justify-content-md-end">
@@ -103,7 +103,7 @@
 						class="btn btn-secondary">Back</a>
 					<button
 						type="submit"
-						class="btn btn-primary">Create</button>
+						class="btn btn-primary">Update</button>
 				</div>
 			</form>
 		</div>

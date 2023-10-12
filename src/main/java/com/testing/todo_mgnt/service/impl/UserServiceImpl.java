@@ -1,5 +1,6 @@
 package com.testing.todo_mgnt.service.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -52,9 +53,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserDto> getAll() {
-		List<User> users = userRepo.findAll();
-		return users.stream().map((user) -> UserDto.mapToUserDto(user)).collect(Collectors.toList());
+	public List<UserDto> getAll(UserDto user) {
+		List<User> users = new ArrayList<>();
+		if (user.getRole().contains("Admin")) {
+			users = userRepo.findAll();
+		} else {
+			User nowUser = userRepo.findById(user.getId()).get();
+			users.add(nowUser);
+		}
+		return users.stream().map((obj) -> UserDto.mapToUserDto(obj)).collect(Collectors.toList());
 	}
 
 	private Role checkRoleExist(String roleName) {
@@ -83,8 +90,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto findByUsernameOrEmail(String username, String email) {
-		return UserDto.mapToUserDto(userRepo.findByUsernameOrEmail(username, email));
+	public User findByUsernameOrEmail(String username, String email) {
+		System.out.println(userRepo.findByUsernameOrEmail(username, email));
+		return userRepo.findByUsernameOrEmail(username, email);
 	}
 
 	@Override
@@ -103,8 +111,10 @@ public class UserServiceImpl implements UserService {
 		newUser.setUsername(userDto.getUsername());
 		newUser.setEmail(userDto.getEmail());
 		newUser.setStatus(userDto.getStatus());
-
 		Role role = roleRepo.findByName(userDto.getRole());
+		if (role == null) {
+			role = checkRoleExist(userDto.getRole());
+		}
 		newUser.setRoles(Arrays.asList(role));
 		userRepo.save(newUser);
 	}

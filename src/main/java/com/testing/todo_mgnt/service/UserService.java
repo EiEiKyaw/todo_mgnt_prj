@@ -3,11 +3,12 @@ package com.testing.todo_mgnt.service;
 import java.util.List;
 
 import com.testing.todo_mgnt.dto.UserDto;
+import com.testing.todo_mgnt.entity.User;
 
 public interface UserService {
 	void create(UserDto userDto);
 
-	List<UserDto> getAll();
+	List<UserDto> getAll(UserDto user);
 
 	UserDto findById(long id);
 
@@ -15,7 +16,7 @@ public interface UserService {
 
 	UserDto findByEmail(String username);
 
-	UserDto findByUsernameOrEmail(String username, String email);
+	User findByUsernameOrEmail(String username, String email);
 
 	UserDto getLoginUser();
 

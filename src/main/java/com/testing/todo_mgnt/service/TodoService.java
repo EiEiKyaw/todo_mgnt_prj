@@ -2,16 +2,21 @@ package com.testing.todo_mgnt.service;
 
 import java.util.List;
 
-import com.testing.todo_mgnt.entity.Todo;
+import com.testing.todo_mgnt.dto.TodoDto;
+import com.testing.todo_mgnt.dto.UserDto;
 
 public interface TodoService {
-	
-	List<Todo> getAll();
 
-	void create(Todo todo);
+	List<TodoDto> getAll(UserDto user);
 
-	Todo findById(long id);
+	void create(TodoDto todo);
 
-	void delete(Todo todo);
+	TodoDto findById(Long id);
+
+	void delete(TodoDto todo);
+
+	void update(TodoDto todo);
+
+	void extendTargetDate(Long id, Integer total);
 
 }

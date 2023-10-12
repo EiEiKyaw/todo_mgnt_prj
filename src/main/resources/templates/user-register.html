@@ -26,22 +26,22 @@
 		<section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
 			<div class="container">
 				<div class="row">
-					<div class="col-4"></div>
-					<div class="col-4">
-						<div class="card mb-3">
+					<div class="col-2"></div>
+					<div class="col-8">
+						<div class="container card mb-3">
+							<div class="card-header">New User</div>
 							<div class="card-body">
-								<div class="pt-4 pb-2 mb-3">
-									<h5 class="card-title text-center pb-0 fs-4">TODO Management</h5>
-								</div>
 								<div
 									class="alert alert-danger"
-									th:if="${param.error}">Invalid credentials</div>
+									th:if="${param.duplicate}"
+									role="alert">Duplicate username or email!</div>
 								<form
 									class="row g-3 needs-validation"
 									novalidate
-									th:action="@{/login}"
+									th:action="@{/user/register}"
+									th:object="${data}"
 									method="post">
-									<div class="col-12">
+									<div class="col-6">
 										<label
 											for="username"
 											class="form-label">Username</label>
@@ -51,11 +51,12 @@
 												name="username"
 												class="form-control"
 												id="username"
+												th:field="*{username}"
 												required>
 											<div class="invalid-feedback">Please enter your username.</div>
 										</div>
 									</div>
-									<div class="col-12">
+									<div class="col-6">
 										<label
 											for="password"
 											class="form-label">Password</label>
@@ -64,25 +65,62 @@
 											name="password"
 											class="form-control"
 											id="password"
+											th:field="*{password}"
 											required>
 										<div class="invalid-feedback">Please enter your password.</div>
 									</div>
-									<div class="col-12 mb-3 mt-3">
+									<div class="col-6">
+										<label
+											for="email"
+											class="form-label">Email</label>
+										<input
+											type="email"
+											name="email"
+											class="form-control"
+											id="email"
+											th:field="*{email}"
+											placeholder="example@email.com"
+											required>
+										<div class="invalid-feedback">Please provide a valid email.</div>
+									</div>
+									<div class="col-md-3">
+										<label
+											for="status"
+											class="form-label">Status</label>
+										<select
+											id="status"
+											class="form-select"
+											th:field="*{status}">
+											<option
+												th:value="ACTIVE"
+												th:text="Active"></option>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<label
+											for="status"
+											class="form-label">Role</label>
+										</select>
+										<select
+											id="status"
+											class="form-select"
+											th:field="*{role}">
+											<option
+												th:value="ROLE_USER"
+												th:text="User"></option>
+										</select>
+									</div>
+									<div class="col-12 d-grid gap-2 d-md-flex justify-content-md-end">
 										<button
-											class="btn btn-primary w-100"
-											type="submit">LOGIN</button>
-										<span>
-											Not registered ?
-											<a th:href="@{/user/register}">Register here</a>
-										</span>
+											type="submit"
+											class="btn btn-primary">Create</button>
 									</div>
 								</form>
 							</div>
 						</div>
+						<div class="col-2"></div>
 					</div>
-					<div class="col-4"></div>
 				</div>
-			</div>
 		</section>
 	</div>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

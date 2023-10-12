@@ -21,31 +21,54 @@
 				<thead class="table-dark">
 					<tr>
 						<th style="width: 5%">No.</th>
-						<th style="width: 25%">Title</th>
-						<th style="width: 40%">Description</th>
-						<th style="width: 15%">Targeted Date</th>
-						<th style="width: 15%">Action</th>
+						<th style="width: 20%">Title</th>
+						<th style="width: 25%">Description</th>
+						<th style="width: 10%">Assignee</th>
+						<th style="width: 10%">Status</th>
+						<th style="width: 10%">Target Date</th>
+						<th style="width: 10%">Extend TD</th>
+						<th style="width: 10%">Action</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="data, rn : ${data_list}">
 						<td th:text="${rn.index+1}"></td>
-						<td th:text="${data.title}"></td>
+						<td
+							th:text="${data.title}"
+							class="text-wrap"></td>
 						<td
 							th:text="${data.description}"
 							class="text-wrap"></td>
+						<td th:text="${data.createdUsername}"></td>
+						<td th:text="${data.statusText}"></td>
 						<td th:text="${#dates.format(data.targetedDate, 'dd-MMM-yyyy')}"></td>
+						<td>
+							<a
+								th:href="@{/todo/extend/3/{id}(id=${data.id})}"
+								class="btn btn-primary btn-sm active"
+								role="button"
+								aria-pressed="true"> 3 </a>
+							<a
+								th:href="@{/todo/extend/5/{id}(id=${data.id})}"
+								class="btn btn-warning btn-sm active"
+								role="button"
+								aria-pressed="true"> 5 </a>
+						</td>
 						<td>
 							<a
 								th:href="@{/todo/edit/{id}(id=${data.id})}"
 								class="btn btn-success btn-sm active"
 								role="button"
-								aria-pressed="true">Edit</a>
+								aria-pressed="true">
+								<i class="fa-solid fa-pen-to-square"></i>
+							</a>
 							<a
 								th:href="@{/todo/delete/{id}(id=${data.id})}"
 								class="btn btn-danger btn-sm active"
 								role="button"
-								aria-pressed="true">Delete</a>
+								aria-pressed="true">
+								<i class="fa-solid fa-trash"></i>
+							</a>
 						</td>
 					</tr>
 				</tbody>

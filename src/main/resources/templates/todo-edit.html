@@ -10,6 +10,10 @@
 		class="container card mb-3">
 		<div class="card-header">Edit Todo</div>
 		<div class="card-body">
+			<div
+				class="alert alert-danger"
+				th:if="${param.fail_extension}"
+				role="alert">Failed extension of target date!</div>
 			<form
 				class="row g-3"
 				th:action="@{/todo/edit/{id}(id=${data.id})}"
@@ -31,11 +35,12 @@
 						for="targetedDate"
 						class="form-label">Target Date</label>
 					<input
-						type="date"
+						type="text"
 						class="form-control"
 						id="targetedDate"
 						name="targetedDate"
-						th:field="*{targetedDate}">
+						th:value="${#dates.format(data.targetedDate, 'dd-MMM-yyyy')}"
+						disabled>
 				</div>
 				<div class="col-md-2">
 					<label
@@ -84,7 +89,7 @@
 						class="btn btn-secondary">Back</a>
 					<button
 						type="submit"
-						class="btn btn-primary">Create</button>
+						class="btn btn-primary">Update</button>
 				</div>
 			</form>
 		</div>

@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.testing.todo_mgnt.dto.UserDto;
 import com.testing.todo_mgnt.service.UserService;
+import com.testing.todo_mgnt.util.Status;
 
 @Controller
 @RequestMapping("/")
@@ -34,8 +36,11 @@ public class HomeController {
 
 	@GetMapping("/home")
 	public String getHomePage(Model model) {
-		System.out.println(userService.getLoginUser().getId());
-		model.addAttribute("login_user", userService.getLoginUser());
+		UserDto loginUser = userService.getLoginUser();
+		model.addAttribute("login_user", loginUser);
+		if (loginUser.getStatus().equals(Status.INACTIVE)) {
+			return "disable-user";
+		}
 		return "index";
 	}
 

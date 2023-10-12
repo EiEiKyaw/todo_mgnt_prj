@@ -6,13 +6,7 @@
 			<a
 				class="navbar-brand"
 				th:href="@{/index}">
-				<img
-					th:src="@{/static/logo.svg}"
-					alt=""
-					width="30"
-					height="24"
-					class="d-inline-block align-text-top">
-				TODO
+				<strong>TODO</strong>
 			</a>
 			<button
 				class="navbar-toggler"
@@ -31,7 +25,8 @@
 					<li class="nav-item">
 						<a
 							class="nav-link"
-							th:href="@{/user/list}">Users</a>
+							th:href="@{/user/list}"
+							th:if="${login_user.role == 'Admin'}">Users</a>
 					</li>
 					<li class="nav-item">
 						<a

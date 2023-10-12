@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.testing.todo_mgnt.dto.TodoDto;
+import com.testing.todo_mgnt.dto.UserDto;
 import com.testing.todo_mgnt.entity.Todo;
 import com.testing.todo_mgnt.service.TodoService;
 import com.testing.todo_mgnt.service.UserService;
@@ -32,45 +34,66 @@ public class TodoController {
 	}
 
 	@PostMapping("/list")
-	public String createTodo(@ModelAttribute("data") Todo todo, BindingResult result) {
-		if (result.hasErrors()) {
-			return "redirect:/todo/create";
+	public String createTodo(@ModelAttribute("data") TodoDto todo, BindingResult result) {
+		try {
+			if (result.hasErrors()) {
+				return "redirect:/todo/create";
+			}
+			todo.setCreatedUser(userService.getLoginUser().getId());
+			todoService.create(todo);
+			return "redirect:/todo/list";
+		} catch (Exception e) {
+			return "redirect:/todo/create?error";
 		}
-		todoService.create(todo);
-		return "redirect:/todo/list";
 	}
 
 	@GetMapping("/list")
 	public String getTodoList(Model model) {
-		model.addAttribute("login_user", userService.getLoginUser());
-		model.addAttribute("data_list", todoService.getAll());
+		UserDto loginUser = userService.getLoginUser();
+		model.addAttribute("login_user", loginUser);
+		model.addAttribute("data_list", todoService.getAll(loginUser));
 		return "todo-list";
 	}
 
 	@GetMapping("/edit/{id}")
-	public String editTodo(@PathVariable("id") long id, Model model) {
+	public String editTodo(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("login_user", userService.getLoginUser());
-		Todo todo = todoService.findById(id);
-		model.addAttribute("data", todo);
+		model.addAttribute("data", todoService.findById(id));
 		return "todo-edit";
 	}
 
 	@PostMapping("/edit/{id}")
-	public String editTodo(@PathVariable("id") long id, @ModelAttribute("data") Todo todo, BindingResult result,
+	public String editTodo(@PathVariable("id") Long id, @ModelAttribute("data") TodoDto todo, BindingResult result,
 			Model model) {
 		if (result.hasErrors()) {
 			todo.setId(id);
 			return "todo-edit";
 		}
 
-		todoService.create(todo);
+		todoService.update(todo);
 		return "redirect:/todo/list";
 	}
 
 	@GetMapping("/delete/{id}")
-	public String deleteTodo(@PathVariable("id") long id, Model model) {
-		Todo todo = todoService.findById(id);
+	public String deleteTodo(@PathVariable("id") Long id, Model model) {
+		TodoDto todo = todoService.findById(id);
 		todoService.delete(todo);
+		return "redirect:/todo/list";
+	}
+
+	@GetMapping("/extend/3/{id}")
+	public String extendThreeTargetDate(@PathVariable("id") Long id, Model model) {
+//		model.addAttribute("login_user", userService.getLoginUser());
+//		model.addAttribute("data", todoService.findById(id));
+		todoService.extendTargetDate(id, 3);
+		return "redirect:/todo/list";
+	}
+
+	@GetMapping("/extend/5/{id}")
+	public String extendFiveTargetDate(@PathVariable("id") long id, Model model) {
+//		model.addAttribute("login_user", userService.getLoginUser());
+//		model.addAttribute("data", todoService.findById(id));
+		todoService.extendTargetDate(id, 5);
 		return "redirect:/todo/list";
 	}
 
