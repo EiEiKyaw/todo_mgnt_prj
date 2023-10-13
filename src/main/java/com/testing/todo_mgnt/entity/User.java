@@ -20,6 +20,7 @@ import javax.persistence.Table;
 
 import com.testing.todo_mgnt.util.Status;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +28,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
+@AllArgsConstructor
 public class User implements Serializable {
 
 	private static final long serialVersionUID = -5317697871167932554L;

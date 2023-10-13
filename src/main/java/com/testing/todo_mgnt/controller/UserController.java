@@ -68,25 +68,27 @@ public class UserController {
 	}
 
 	@GetMapping("/edit/{id}")
-	public String editUser(@PathVariable("id") long id, Model model) {
+	public String editUser(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("login_user", userService.getLoginUser());
 		model.addAttribute("data", userService.findById(id));
 		return "user-edit";
 	}
 
 	@PostMapping("/edit/{id}")
-	public String editUser(@PathVariable("id") long id, @ModelAttribute("data") UserDto userDto, BindingResult result,
+	public String editUser(@PathVariable("id") Long id, @ModelAttribute("data") UserDto userDto, BindingResult result,
 			Model model) {
+		System.out.println("id>>>>" + id);
 		if (result.hasErrors()) {
+			System.out.println("error");
 			userDto.setId(id);
 			return "user-edit";
 		}
-		User existingUser = userService.findByUsernameOrEmail(userDto.getUsername(), userDto.getEmail());
-		if (existingUser != null && existingUser.getId() != id) {
-			return "redirect:/user/edit/" + existingUser.getId() + "?duplicate";
+		try {
+			userService.update(userDto);
+			return "redirect:/user/list";
+		} catch (Exception e) {
+			return "redirect:/user/edit/" + id + "?duplicate";
 		}
-		userService.update(userDto);
-		return "redirect:/user/list";
 	}
 
 }

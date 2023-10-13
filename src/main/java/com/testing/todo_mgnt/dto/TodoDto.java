@@ -31,7 +31,7 @@ public class TodoDto {
 
 	private String createdUsername;
 
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date targetedDate;
 
 	@DateTimeFormat(pattern = "dd/MM/yyyy")

@@ -83,16 +83,12 @@ public class TodoController {
 
 	@GetMapping("/extend/3/{id}")
 	public String extendThreeTargetDate(@PathVariable("id") Long id, Model model) {
-//		model.addAttribute("login_user", userService.getLoginUser());
-//		model.addAttribute("data", todoService.findById(id));
 		todoService.extendTargetDate(id, 3);
 		return "redirect:/todo/list";
 	}
 
 	@GetMapping("/extend/5/{id}")
 	public String extendFiveTargetDate(@PathVariable("id") long id, Model model) {
-//		model.addAttribute("login_user", userService.getLoginUser());
-//		model.addAttribute("data", todoService.findById(id));
 		todoService.extendTargetDate(id, 5);
 		return "redirect:/todo/list";
 	}
