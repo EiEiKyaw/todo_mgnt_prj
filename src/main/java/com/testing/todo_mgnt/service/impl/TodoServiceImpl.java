@@ -112,7 +112,7 @@ public class TodoServiceImpl implements TodoService {
 	public void extendTargetDate(Long id, Integer total) {
 		Todo todo = todoRepo.findById(id).get();
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(todo.getTargetedDate());
+		cal.setTime(todo.getTargetedDate() == null ? new Date() : todo.getTargetedDate());
 		cal.add(Calendar.DATE, total);
 		todoRepo.extendTargetDate(id, cal.getTime());
 	}

@@ -12,10 +12,10 @@
 		<div class="card-body">
 			<div
 				class="alert alert-danger"
-				th:if="${param.fail_extension}"
-				role="alert">Failed extension of target date!</div>
+				th:if="${param.too_long}"
+				role="alert">Detail or Description is too long!</div>
 			<form
-				class="row g-3"
+				class="row g-3 needs-validation"
 				th:action="@{/todo/edit/{id}(id=${data.id})}"
 				th:object="${data}"
 				method="post">
@@ -23,12 +23,16 @@
 					<label
 						for="title"
 						class="form-label">Title</label>
-					<input
-						type="text"
-						class="form-control"
-						id="title"
-						name="title"
-						th:field="*{title}">
+					<div class="input-group has-validation">
+						<input
+							type="text"
+							class="form-control"
+							id="title"
+							name="title"
+							th:field="*{title}"
+							required>
+						<div class="invalid-feedback">Please enter title.</div>
+					</div>
 				</div>
 				<div class="col-md-3">
 					<label
@@ -46,11 +50,11 @@
 					<label
 						for="status"
 						class="form-label">Status</label>
-					</select>
 					<select
 						id="status"
 						class="form-select"
-						th:field="*{status}">
+						th:field="*{status}"
+						required>
 						<option
 							th:value="TODO"
 							th:text="Todo"></option>
@@ -61,6 +65,7 @@
 							th:value="DONE"
 							th:text="Done"></option>
 					</select>
+					<div class="invalid-feedback">Please choose status.</div>
 				</div>
 				<div class="col-12">
 					<label
@@ -71,7 +76,9 @@
 						class="form-control"
 						id="description"
 						name="description"
-						th:field="*{description}">
+						th:field="*{description}"
+						required>
+					<div class="invalid-feedback">Please enter description.</div>
 				</div>
 				<div class="col-12">
 					<label

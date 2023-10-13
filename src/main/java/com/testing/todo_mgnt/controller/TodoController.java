@@ -1,6 +1,9 @@
 package com.testing.todo_mgnt.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +23,8 @@ import com.testing.todo_mgnt.service.UserService;
 @RequestMapping("/todo")
 public class TodoController {
 
+	public static final Logger logger = LoggerFactory.getLogger(TodoController.class);
+
 	@Autowired
 	private TodoService todoService;
 
@@ -34,7 +39,7 @@ public class TodoController {
 	}
 
 	@PostMapping("/list")
-	public String createTodo(@ModelAttribute("data") TodoDto todo, BindingResult result) {
+	public String createTodo(@ModelAttribute("data") TodoDto todo, BindingResult result, Model model) {
 		try {
 			if (result.hasErrors()) {
 				return "redirect:/todo/create";
@@ -43,6 +48,12 @@ public class TodoController {
 			todoService.create(todo);
 			return "redirect:/todo/list";
 		} catch (Exception e) {
+			logger.info("CLASS : " + e.getClass());
+			if (e instanceof DataIntegrityViolationException) {
+				logger.info("ERRROR : " + e.getMessage());
+				return "redirect:/todo/create?too_long";
+			}
+			System.out.println(e.getClass());
 			return "redirect:/todo/create?error";
 		}
 	}

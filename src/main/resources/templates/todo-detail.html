@@ -10,6 +10,10 @@
 		class="container card mb-3">
 		<div class="card-header">New Todo</div>
 		<div class="card-body">
+			<div
+				class="alert alert-danger  needs-validation"
+				th:if="${param.too_long}"
+				role="alert">Detail or Description is too long!</div>
 			<form
 				class="row g-3"
 				th:action="@{/todo/list}"
@@ -24,10 +28,9 @@
 						class="form-control"
 						id="title"
 						name="title"
-						th:field="*{title}">
-					<span
-						th:if="${#fields.hasErrors('title')}"
-						th:errors="*{title}"></span>
+						th:field="*{title}"
+						required>
+					<div class="invalid-feedback">Please enter title.</div>
 				</div>
 				<div class="col-md-3">
 					<label
@@ -38,17 +41,19 @@
 						class="form-control"
 						id="targetedDate"
 						name="targetedDate"
-						th:field="*{targetedDate}">
+						th:field="*{targetedDate}"
+						required>
+					<div class="invalid-feedback">Please choose target date.</div>
 				</div>
 				<div class="col-md-2">
 					<label
 						for="status"
 						class="form-label">Status</label>
-					</select>
 					<select
 						id="status"
 						class="form-select"
-						th:field="*{status}">
+						th:field="*{status}"
+						required>
 						<option
 							th:value="TODO"
 							th:text="Todo"></option>
@@ -59,6 +64,7 @@
 							th:value="DONE"
 							th:text="Done"></option>
 					</select>
+					<div class="invalid-feedback">Please choose status.</div>
 				</div>
 				<div class="col-12">
 					<label
@@ -70,6 +76,7 @@
 						id="description"
 						name="description"
 						th:field="*{description}">
+					<div class="invalid-feedback">Please enter description.</div>
 				</div>
 				<div class="col-12">
 					<label
